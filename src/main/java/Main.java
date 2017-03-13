@@ -1,10 +1,9 @@
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -12,20 +11,19 @@ public class Main {
         dataSource.setURL("jdbc:mysql://127.0.0.1/java_course");
         dataSource.setUser("root");
         dataSource.setPassword("root");
-        Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement();
 
-        ResultSet rs = statement.executeQuery("select * from students");
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        ArrayList<Student> students = new ArrayList<Student>();
-        while(rs.next()) {
-            Student student = new Student();
-            student.name = rs.getString("name");
-            student.id = rs.getInt("id");
-            student.age = rs.getInt("age");
-            students.add(student);
+        List<Student> students = jdbcTemplate
+                .query("select * from students",
+                        new BeanPropertyRowMapper(Student.class));
+
+        for (Student student : students) {
+            System.out.println(student.getName());
         }
-        connection.close();
+
+
+
 
     }
 }
