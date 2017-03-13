@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
@@ -14,16 +15,15 @@ public class Main {
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
 
-        //INSERT/UPDATE/DELETE
-        int affectedRowCount = statement.executeUpdate("");
-        //SELECT
         ResultSet rs = statement.executeQuery("select * from students");
-        //OTHERS
-        boolean success = statement.execute("");
 
-
+        ArrayList<Student> students = new ArrayList<Student>();
         while(rs.next()) {
-            System.out.println(rs.getString("name"));
+            Student student = new Student();
+            student.name = rs.getString("name");
+            student.id = rs.getInt("id");
+            student.age = rs.getInt("age");
+            students.add(student);
         }
         connection.close();
 
